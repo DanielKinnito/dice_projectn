@@ -10,6 +10,7 @@ function Dice({ sides }: DiceProps) {
   const [isRolling, setIsRolling] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log("Sides Array:", sides); // Add this line
     setDiceFace(sides[0]); // Initialize with the first side
   }, [sides]);
 
@@ -19,19 +20,11 @@ function Dice({ sides }: DiceProps) {
       const apiUrl = import.meta.env.VITE_REACT_APP_API_CALL;
       const response = await fetch(`${apiUrl}/dice/roll/`);
       const data = await response.json();
-      if (response.ok) {
+      console.log("API Response:", data); // Add this line
       setTimeout(() => {
         setDiceFace(sides[data.dice_face - 1]); // Use backend result
         setIsRolling(false);
       }, 2000); // Adjusted animation duration
-    }
-      else{
-        setTimeout(() => {
-          const randomIndex = Math.floor(Math.random() * sides.length);
-          setDiceFace(sides[randomIndex]);
-          setIsRolling(false);
-        }, 1000);
-      }
     } catch (error) {
       console.error('Error rolling dice:', error);
       setIsRolling(false);
