@@ -132,7 +132,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",  # Your React development server
-    "https://diceforge.vercel.com",  # Add your production domain here
+    "https://dice-projectn.vercel.app/",  # Add your production domain here
 ]
 
 CORS_ALLOW_CREDENTIALS = True  # If you need to allow credentials (cookies, etc.)
