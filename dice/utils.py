@@ -25,8 +25,8 @@ def fetch_random_pool(num_integers=1000):
     url = RANDOM_ORG_URL
     params = {
         "num": num_integers,
-        "min": 0,
-        "max": 4294967295,  # 2^32 - 1
+        "min": -100000000,
+        "max": 100000000,
         "col": 1,
         "base": 10,
         "format": "plain",
