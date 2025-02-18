@@ -6,12 +6,11 @@ interface DiceProps {
 }
 
 function Dice({ sides }: DiceProps) {
-  const [diceFace, setDiceFace] = useState<string>(sides[0]);
+  const [diceFace, setDiceFace] = useState<number>(0); // Initialize with 0
   const [isRolling, setIsRolling] = useState<boolean>(false);
 
   useEffect(() => {
-    console.log("Sides Array:", sides); // Add this line
-    setDiceFace(sides[0]); // Initialize with the first side
+    console.log("Sides Array:", sides);
   }, [sides]);
 
   const rollDice = async () => {
@@ -20,11 +19,11 @@ function Dice({ sides }: DiceProps) {
       const apiUrl = import.meta.env.VITE_REACT_APP_API_CALL;
       const response = await fetch(`${apiUrl}/dice/roll/`);
       const data = await response.json();
-      console.log("API Response:", data); // Add this line
+      console.log("API Response:", data);
       setTimeout(() => {
-        setDiceFace(sides[data.dice_face - 1]); // Use backend result
+        setDiceFace(data.dice_face - 1); // Store the index (0-5)
         setIsRolling(false);
-      }, 2000); // Adjusted animation duration
+      }, 2000);
     } catch (error) {
       console.error('Error rolling dice:', error);
       setIsRolling(false);
@@ -34,12 +33,12 @@ function Dice({ sides }: DiceProps) {
   return (
     <div className={styles.diceContainer}>
       <div className={`${styles.dice} ${isRolling ? styles.rolling : ''}`} onClick={rollDice}>
-        <div className={styles.face} data-side={sides[0]}></div>
-        <div className={styles.face} data-side={sides[1]}></div>
-        <div className={styles.face} data-side={sides[2]}></div>
-        <div className={styles.face} data-side={sides[3]}></div>
-        <div className={styles.face} data-side={sides[4]}></div>
-        <div className={styles.face} data-side={sides[5]}></div>
+        <div className={styles.face}>{sides[diceFace]}</div>
+        <div className={styles.face}>{sides[(diceFace + 1) % 6]}</div>
+        <div className={styles.face}>{sides[(diceFace + 2) % 6]}</div>
+        <div className={styles.face}>{sides[(diceFace + 3) % 6]}</div>
+        <div className={styles.face}>{sides[(diceFace + 4) % 6]}</div>
+        <div className={styles.face}>{sides[(diceFace + 5) % 6]}</div>
       </div>
     </div>
   );

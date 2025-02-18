@@ -10,23 +10,9 @@
   position: relative;
   width: 150px;
   height: 150px;
-  background-color: #fff;
-  border-radius: 15px;
-  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
-  cursor: pointer;
-  font-size: 2em;
-  color: #333;
-  transition: transform 2s ease-in-out;
   transform-style: preserve-3d;
-}
-
-.dice::before {
-  content: attr(data-face);
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: inherit;
+  transition: transform 2s ease-in-out;
+  cursor: pointer;
 }
 
 .face {
@@ -40,10 +26,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.face::before {
-  content: attr(data-side);
 }
 
 /* Position the faces to form a cube */
