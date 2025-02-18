@@ -2,20 +2,22 @@ import os
 import secrets
 import requests
 import logging
+from django.conf import settings  # Import settings
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Global pool to hold true random numbers
 RANDOM_POOL = []
-D6_API_KEY = os.getenv("D6_API_KEY")
+# D6_API_KEY = os.getenv("D6_API_KEY")  # No longer needed
 RANDOM_ORG_URL = "https://www.random.org/integers/"  # Define the URL
 
 def fetch_random_pool(num_integers=1000):
     """
     Fetch a batch of random numbers from random.org.
     """
-    global D6_API_KEY, RANDOM_ORG_URL
+    # global D6_API_KEY, RANDOM_ORG_URL  # No longer needed
+    D6_API_KEY = settings.D6_API_KEY  # Access from settings
     if not D6_API_KEY:
         logging.error("D6_API_KEY is not set.  Using fallback PRNG.")
         return [secrets.randbits(32) for _ in range(num_integers)]  # Fallback to PRNG
