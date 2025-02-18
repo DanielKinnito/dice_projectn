@@ -1,0 +1,1 @@
+web: gunicorn dice_projectn.wsgi --log-file -

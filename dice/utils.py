@@ -1,19 +1,28 @@
 import os
-import requests
 import secrets
+import requests
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # Global pool to hold true random numbers
 RANDOM_POOL = []
 D6_API_KEY = os.getenv("D6_API_KEY")
+RANDOM_ORG_URL = "https://www.random.org/integers/"  # Define the URL
 
-def fetch_random_pool():
+def fetch_random_pool(num_integers=1000):
     """
-    Fetch a batch of 1000 random numbers from random.org.
-    Adjust the URL and parameters as needed.
+    Fetch a batch of random numbers from random.org.
     """
-    url = "https://www.random.org/integers/"
+    global D6_API_KEY, RANDOM_ORG_URL
+    if not D6_API_KEY:
+        logging.error("D6_API_KEY is not set.  Using fallback PRNG.")
+        return [secrets.randbits(32) for _ in range(num_integers)]  # Fallback to PRNG
+
+    url = RANDOM_ORG_URL
     params = {
-        "num": 1000,
+        "num": num_integers,
         "min": 0,
         "max": 4294967295,  # 2^32 - 1
         "col": 1,
@@ -21,13 +30,15 @@ def fetch_random_pool():
         "format": "plain",
         "rnd": "new",
     }
-    response = requests.get(url, params=params)
-    if response.status_code == 200:
-        # Convert the response text into a list of integers
+    try:
+        response = requests.get(url, params=params, timeout=10)  # Added timeout
+        response.raise_for_status()  # Raise HTTPError for bad responses (4xx or 5xx)
         numbers = [int(num) for num in response.text.strip().split()]
+        logging.info(f"Fetched {len(numbers)} random numbers from random.org")
         return numbers
-    else:
-        raise Exception(f"Failed to fetch random pool: {response.text}")
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Failed to fetch random pool from random.org: {e}. Using fallback PRNG.")
+        return [secrets.randbits(32) for _ in range(num_integers)]  # Fallback to PRNG
 
 def initialize_random_pool():
     """
@@ -36,6 +47,7 @@ def initialize_random_pool():
     global RANDOM_POOL
     if not RANDOM_POOL:
         RANDOM_POOL = fetch_random_pool()
+        logging.info("Initialized random pool.")
 
 def get_noise_value():
     """
@@ -45,19 +57,18 @@ def get_noise_value():
     global RANDOM_POOL
     if not RANDOM_POOL:
         initialize_random_pool()
+    if not RANDOM_POOL:
+        logging.warning("Random pool is empty after initialization. Using secrets.randbits as fallback.")
+        return secrets.randbits(32)  # Fallback if initialization fails
     return RANDOM_POOL.pop(0)
 
 def roll_dice():
     """
     Generate a dice roll using a combination of CSPRNG and random.org noise.
     """
-    # Get a secure pseudo random number (32-bit integer)
     prng_value = secrets.randbits(32)
-    # Get a true random number from our pool as noise
     noise = get_noise_value()
-    # Combine the two numbers (here we use XOR)
     mixed = prng_value ^ noise
-    # Map the result to a dice face (1 through 6)
     dice_face = (mixed % 6) + 1
     return dice_face
 
@@ -67,5 +78,7 @@ def reseed_if_needed(threshold=100):
     """
     global RANDOM_POOL
     if len(RANDOM_POOL) < threshold:
-        additional = fetch_random_pool()
+        num_to_fetch = 1000  # Fetch the maximum allowed
+        additional = fetch_random_pool(num_to_fetch)
         RANDOM_POOL.extend(additional)
+        logging.info(f"Reseeding random pool.  Added {len(additional)} numbers.")
