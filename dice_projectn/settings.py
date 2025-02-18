@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-v=@^_+n5@07p=tgg&!=96*kws41&%cjccd+xy#1r5-84rn4f3=
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['diceforge.onrender.com', 'localhost', ]
 
 D6_API_KEY = os.getenv("D6_API_KEY") # Access the D6_API_KEY
 
