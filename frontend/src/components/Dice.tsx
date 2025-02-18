@@ -1,21 +1,34 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styles from './Dice.module.css';
 
-function Dice() {
-  const [diceFace, setDiceFace] = useState<number>(1);
+interface DiceProps {
+  sides: string[];
+}
+
+function Dice({ sides }: DiceProps) {
+  const [diceFace, setDiceFace] = useState<string>(sides[0]);
   const [isRolling, setIsRolling] = useState<boolean>(false);
+
+  useEffect(() => {
+    setDiceFace(sides[0]); // Initialize with the first side
+  }, [sides]);
 
   const rollDice = async () => {
     setIsRolling(true);
     try {
-      const response = await fetch('/dice/roll/'); // Assuming Django is serving static files
-      const data = await response.json();
+      // const response = await fetch('/dice/roll/'); // Assuming Django is serving static files
+      // const data = await response.json();
+      // setTimeout(() => {
+      //   setDiceFace(data.dice_face);
+      //   setIsRolling(false);
+      // }, 1000); // Match animation duration
       setTimeout(() => {
-        setDiceFace(data.dice_face);
+        const randomIndex = Math.floor(Math.random() * sides.length);
+        setDiceFace(sides[randomIndex]);
         setIsRolling(false);
-      }, 1000); // Match animation duration
+      }, 1000);
     } catch (error) {
-      console.error("Error rolling dice:", error);
+      console.error('Error rolling dice:', error);
       setIsRolling(false);
     }
   };
