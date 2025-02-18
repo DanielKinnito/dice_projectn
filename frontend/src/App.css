@@ -49,18 +49,24 @@
 .container {
   display: flex;
   width: 100%;
+  justify-content: space-between; /* Distribute space between items */
+  align-items: center; /* Vertically center items */
 }
 
 .sidebar {
-  width: 300px;
+  width: 200px; /* Reduced sidebar width */
   padding: 20px;
-  border-right: 1px solid #ccc;
+  border-left: 1px solid #ccc; /* Border on the left */
   text-align: left;
+  margin-left: 20px; /* Add some space between dice and sidebar */
 }
 
 .dice-area {
-  flex: 1;
+  flex: 1; /* Take up remaining space */
   padding: 20px;
+  display: flex;
+  justify-content: center; /* Center the dice horizontally */
+  align-items: center; /* Center the dice vertically */
 }
 
 .side-input {

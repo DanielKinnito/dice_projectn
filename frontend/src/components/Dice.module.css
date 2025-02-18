@@ -2,18 +2,22 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 200px;
+  min-height: 400px;
+  perspective: 800px;
 }
 
 .dice {
   position: relative;
-  width: 100px;
-  height: 100px;
+  width: 150px;
+  height: 150px;
   background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.3);
   cursor: pointer;
-  transition: transform 1s ease-in-out;
+  font-size: 2em;
+  color: #333;
+  transition: transform 2s ease-in-out;
+  transform-style: preserve-3d;
 }
 
 .dice::before {
@@ -22,19 +26,60 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  font-size: inherit;
+}
+
+.face {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 2px solid #333;
   font-size: 2em;
   color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.face::before {
+  content: attr(data-side);
+}
+
+/* Position the faces to form a cube */
+.face:nth-child(1) {
+  transform: translateZ(75px);
+}
+
+.face:nth-child(2) {
+  transform: rotateY(90deg) translateZ(75px);
+}
+
+.face:nth-child(3) {
+  transform: rotateY(180deg) translateZ(75px);
+}
+
+.face:nth-child(4) {
+  transform: rotateY(270deg) translateZ(75px);
+}
+
+.face:nth-child(5) {
+  transform: rotateX(90deg) translateZ(75px);
+}
+
+.face:nth-child(6) {
+  transform: rotateX(-90deg) translateZ(75px);
 }
 
 .rolling {
-  animation: roll 1s ease-in-out;
+  animation: roll3D 2s ease-in-out;
 }
 
-@keyframes roll {
+@keyframes roll3D {
   0% {
-    transform: rotate(0deg);
+    transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg);
   }
   100% {
-    transform: rotate(720deg);
+    transform: rotateX(720deg) rotateY(720deg) rotateZ(360deg);
   }
 }

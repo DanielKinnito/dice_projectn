@@ -22,20 +22,13 @@ function App() {
     setSides(newSides);
   };
 
-  const addSide = () => {
-    setSides([...sides, '']);
-  };
-
-  const removeSide = (index: number) => {
-    const newSides = [...sides];
-    newSides.splice(index, 1);
-    setSides(newSides);
-  };
-
   return (
     <div className="App">
       <h1>Dice Roller</h1>
       <div className="container">
+        <div className="dice-area">
+          <Dice sides={sides} />
+        </div>
         <div className="sidebar">
           <h2>Customize Sides</h2>
           {sides.map((side, index) => (
@@ -47,17 +40,8 @@ function App() {
                 value={side}
                 onChange={(e) => handleSideChange(index, e.target.value)}
               />
-              <button type="button" onClick={() => removeSide(index)}>
-                Remove
-              </button>
             </div>
           ))}
-          <button type="button" onClick={addSide}>
-            Add Side
-          </button>
-        </div>
-        <div className="dice-area">
-          <Dice sides={sides} />
         </div>
       </div>
     </div>

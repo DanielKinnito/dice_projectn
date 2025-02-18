@@ -16,17 +16,22 @@ function Dice({ sides }: DiceProps) {
   const rollDice = async () => {
     setIsRolling(true);
     try {
-      // const response = await fetch('/dice/roll/'); // Assuming Django is serving static files
-      // const data = await response.json();
-      // setTimeout(() => {
-      //   setDiceFace(data.dice_face);
-      //   setIsRolling(false);
-      // }, 1000); // Match animation duration
+      const apiUrl = import.meta.env.VITE_REACT_APP_API_CALL;
+      const response = await fetch(`${apiUrl}/dice/roll/`);
+      const data = await response.json();
+      if (response.ok) {
       setTimeout(() => {
-        const randomIndex = Math.floor(Math.random() * sides.length);
-        setDiceFace(sides[randomIndex]);
+        setDiceFace(sides[data.dice_face - 1]); // Use backend result
         setIsRolling(false);
-      }, 1000);
+      }, 2000); // Adjusted animation duration
+    }
+      else{
+        setTimeout(() => {
+          const randomIndex = Math.floor(Math.random() * sides.length);
+          setDiceFace(sides[randomIndex]);
+          setIsRolling(false);
+        }, 1000);
+      }
     } catch (error) {
       console.error('Error rolling dice:', error);
       setIsRolling(false);
@@ -35,12 +40,13 @@ function Dice({ sides }: DiceProps) {
 
   return (
     <div className={styles.diceContainer}>
-      <div
-        className={`${styles.dice} ${isRolling ? styles.rolling : ''}`}
-        data-face={diceFace}
-        onClick={rollDice}
-      >
-        {/* Dice dots will be styled with CSS */}
+      <div className={`${styles.dice} ${isRolling ? styles.rolling : ''}`} onClick={rollDice}>
+        <div className={styles.face} data-side={sides[0]}></div>
+        <div className={styles.face} data-side={sides[1]}></div>
+        <div className={styles.face} data-side={sides[2]}></div>
+        <div className={styles.face} data-side={sides[3]}></div>
+        <div className={styles.face} data-side={sides[4]}></div>
+        <div className={styles.face} data-side={sides[5]}></div>
       </div>
     </div>
   );
